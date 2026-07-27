@@ -71,3 +71,22 @@ export const signIn = async (req, res) => {
       return res.status(500).json({ message: "Error signing in" });
    }
 };
+
+export const signOut = async (req, res) => {
+   try {
+      //take refresh token from cookie
+      const token = req.cookies?.refreshToken;  
+      if (token) {
+         // delete refresh token from sessions collection
+         await Session.deleteOne({ refreshToken: token });
+         // delete cookie 
+         res.clearCookie('refreshToken');
+      }
+      return res.sendStatus(204);
+   }
+      
+   catch (error) {
+      console.error("Error during sign out:", error);
+      return res.status(500).json({ message: "Error signing out" });
+}};
+
