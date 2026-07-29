@@ -1,17 +1,40 @@
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router"
+import {z} from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useAuthStore } from "@/stores/useAuthStore"
 
-export function SignupForm({
+const signInSchema = z.object({
+  username: z.string().min(3, { message: "Username is required 3 characters long" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
+})
+type SignInFormValues = z.infer<typeof signInSchema>
+export function SigninForm({
   className,
   ...props
-}: React.ComponentProps<"div">) {
-  return (
+}: React.ComponentProps<"div">) { 
+    const {signIn} = useAuthStore();
+    const navigate = useNavigate();
+    const {register, handleSubmit, formState: { errors, isSubmitting}} = useForm<SignInFormValues>({
+    resolver: zodResolver(signInSchema)
+  });
+  const onSubmit = async (data: SignInFormValues) => {
+    const {username, password} = data
+    await signIn(username, password);
+    navigate("/");
+
+  };
+   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0">
+      <Card className="overflow-hidden p-0 border-border">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
             {/*header - logo */}
               <div className="flex flex-col items-center text-center gap-2">
@@ -25,75 +48,53 @@ export function SignupForm({
                 />
                 </a>
                 <h1 className="text-2xl font-bold">
-                  Create an account
+                  Sign in
                 </h1>
                 <p className="text-muted-foreground text-balance">
-                  Welcome! please enter your details to create an account.
+                  Welcome! Please enter your details to sign in.
                 </p>
-              </div>
-              {/*Name*/}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <label htmlFor="firstName" className="block text-sm">
-                    First Name
-                  </label>
-                  <Input
-                    id="firstName"
-                    type="text"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="lastName" className="block text-sm">
-                    Last Name
-                  </label>
-                  <Input
-                    id="lastName"
-                    type="text"
-                  />
-                </div>
               </div>
               {/*Username*/}
               <div className="flex flex-col gap-3">
-                <label htmlFor="username" className="block text-sm">
+                <Label htmlFor="username">
                   Username
-                </label>
+                </Label>
                 <Input
                   id="username"
                   type="text"
                   placeholder="Enter your username"
+                  {...register("username")}
                 />
-              </div>
-              {/*Email */}
-              <div className="flex flex-col gap-3">
-                <label htmlFor="email" className="block text-sm">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                />
+                {errors.username && (
+                  <p className="text-sm text-destructive">{errors.username.message}</p>
+                )}
               </div>
               {/*Password */}
               <div className="flex flex-col gap-3">
-                <label htmlFor="password" className="block text-sm">
+                <Label htmlFor="password">
                   Password
-                </label>
+                </Label>
                 <Input
                   id="password"
                   type="password"
+                  placeholder="Enter your password"
+                  {...register("password")}
                 />
+                {errors.password && (
+                  <p className="text-sm text-destructive">{errors.password.message}</p>
+                )}
               </div>
-              {/*Sign Up Button */}
-              <Button type="submit" className="w-full">
-                Sign Up
+              
+              {/*Sign In Button */}
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                Sign In
               </Button>
               {/*Sign in Button */}
               <div className="text-center text-sm">
                 <p>
-                  Already have an account?{" "}
-                  <a href="/signin" className="underline underline-offset-4">
-                    Sign in
+                  Have an account?{" "}
+                  <a href="/signup" className="underline underline-offset-4">
+                    Sign up
                   </a>
                 </p>
               </div>
@@ -101,7 +102,7 @@ export function SignupForm({
           </form>
           <div className="relative hidden bg-muted md:block">
             <img
-              src="/placeholderSignUp.png"
+              src="/placeholder.png"
               alt="Image"
               className="absolute top-1/2 -translate-y-1/2 object-cover "
             />
