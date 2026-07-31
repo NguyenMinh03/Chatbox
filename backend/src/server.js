@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { connectDB } from './libs/db.js';
 import authRoutes from './routes/authRoute.js';
+import friendRoute from './routes/friendRoute.js';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoute.js';
 import { protectedRoute } from './middlewares/authMiddleware.js';
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoutes);
 // private routes
 app.use(protectedRoute); // Apply the protectedRoute middleware to all routes below
 app.use('/api/users', userRoutes);
+app.use("/api/friends", friendRoute)
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
