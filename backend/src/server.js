@@ -6,6 +6,7 @@ import friendRoute from './routes/friendRoute.js';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoute.js';
 import { protectedRoute } from './middlewares/authMiddleware.js';
+import messageRoute from './routes/messageRoute.js'; // Import the message routes
 import cors from "cors"
 dotenv.config();
 const app = express();
@@ -21,6 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use(protectedRoute); // Apply the protectedRoute middleware to all routes below
 app.use('/api/users', userRoutes);
 app.use("/api/friends", friendRoute)
+app.use("/api/messages", messageRoute); // Add this line to include the message routes
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
