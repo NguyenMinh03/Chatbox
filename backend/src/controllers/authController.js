@@ -22,7 +22,7 @@ export const signUp = async (req, res) => {
          username,
          email,
          hashedPassword,
-         displayName: `${firstName} ${lastName}`,
+         displayName: `${lastName} ${firstName}`,
       });
       return res.status(201).json({ message: "User created successfully" });
    } catch (error) {

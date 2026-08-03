@@ -28,7 +28,49 @@ export const checkFriendship = async (req, res, next) => {
             return next();
     }
     // todo: check group friendship
+      const friendChecks = memberIds.map(async (memberId) => {
+      const [userA, userB] = pair(me, memberId);
+      const friend = await Friend.findOne({ userA, userB });
+      return friend ? null : memberId;
+    });
+
+    const results = await Promise.all(friendChecks);
+    const notFriends = results.filter(Boolean);
+
+    if (notFriends.length > 0) {
+      return res
+        .status(403)
+        .json({ message: "You can only add friends to the group.", notFriends });
+    }
+    next();
     } catch (error) {
         res.status(500).json({ message: "Error checking friendship", error });
     }
+};
+export const checkGroupMembership = async (req, res, next) => {
+  try {
+    const { conversationId } = req.body;
+    const userId = req.user._id;
+
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation) {
+      return res.status(404).json({ message: "Conversation not found" });
+    }
+
+    const isMember = conversation.participants.some(
+      (p) => p.userId.toString() === userId.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({ message: "You are not a member of this group." });
+    }
+
+    req.conversation = conversation;
+
+    next();
+  } catch (error) {
+    console.error("Error checking group membership:", error);
+    return res.status(500).json({ message: "System error" });
+  }
 };
