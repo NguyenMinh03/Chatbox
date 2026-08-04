@@ -11,6 +11,8 @@ import messageRoute from './routes/messageRoute.js'; // Import the message route
 import conversationRoute from './routes/conversationRoute.js'; // Import the conversation routes
 import cors from "cors"
 import { initSocket } from './socket/index.js';
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
@@ -21,6 +23,9 @@ const PORT = process.env.PORT || 5001;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({origin:process.env.CLIENT_URL,credentials:true}))
+// Swagger setup
+const swaggerDocument = JSON.parse(fs.readFileSync('./src/swagger.json', 'utf8'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // public routes 
 app.use('/api/auth', authRoutes);
 // private routes
