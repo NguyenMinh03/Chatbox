@@ -1,0 +1,203 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Chatbox API",
+    "version": "1.0.0",
+    "description": "REST API for the Chatbox messaging application"
+  },
+  "servers": [
+    { "url": "/api" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Create a new user account",
+        "security": [],
+        "responses": {
+          "201": { "description": "User created" },
+          "400": { "description": "Missing required fields" },
+          "409": { "description": "User already exists" }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign in and receive an access token",
+        "security": [],
+        "responses": {
+          "200": { "description": "Signed in successfully" },
+          "401": { "description": "Invalid credentials" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/auth/signout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign out and invalidate the refresh token",
+        "security": [],
+        "responses": {
+          "204": { "description": "Signed out" }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Exchange a refresh token cookie for a new access token",
+        "security": [],
+        "responses": {
+          "200": { "description": "New access token issued" },
+          "401": { "description": "No refresh token" },
+          "403": { "description": "Refresh token invalid or expired" }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get the current authenticated user",
+        "responses": {
+          "200": { "description": "Current user" }
+        }
+      }
+    },
+    "/friends": {
+      "get": {
+        "tags": ["Friends"],
+        "summary": "List the current user's friends",
+        "responses": {
+          "200": { "description": "Friend list" }
+        }
+      }
+    },
+    "/friends/requests": {
+      "get": {
+        "tags": ["Friends"],
+        "summary": "List sent and received friend requests",
+        "responses": {
+          "200": { "description": "Sent and received requests" }
+        }
+      },
+      "post": {
+        "tags": ["Friends"],
+        "summary": "Send a friend request",
+        "responses": {
+          "201": { "description": "Request sent" },
+          "400": { "description": "Invalid request" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/friends/requests/{requestId}/accept": {
+      "post": {
+        "tags": ["Friends"],
+        "summary": "Accept a friend request",
+        "parameters": [
+          { "name": "requestId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Request accepted" },
+          "403": { "description": "Not the recipient of this request" },
+          "404": { "description": "Request not found" }
+        }
+      }
+    },
+    "/friends/requests/{requestId}/decline": {
+      "post": {
+        "tags": ["Friends"],
+        "summary": "Decline a friend request",
+        "parameters": [
+          { "name": "requestId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "Request declined" },
+          "403": { "description": "Not the recipient of this request" },
+          "404": { "description": "Request not found" }
+        }
+      }
+    },
+    "/conversations": {
+      "get": {
+        "tags": ["Conversations"],
+        "summary": "List the current user's conversations",
+        "responses": {
+          "200": { "description": "Conversation list" }
+        }
+      },
+      "post": {
+        "tags": ["Conversations"],
+        "summary": "Create a direct or group conversation",
+        "responses": {
+          "201": { "description": "Conversation created" },
+          "400": { "description": "Invalid conversation payload" },
+          "403": { "description": "Members must be friends" }
+        }
+      }
+    },
+    "/conversations/{conversationId}/messages": {
+      "get": {
+        "tags": ["Conversations"],
+        "summary": "Get a page of messages for a conversation",
+        "parameters": [
+          { "name": "conversationId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 50 } },
+          { "name": "cursor", "in": "query", "schema": { "type": "string" }, "description": "ISO timestamp cursor for pagination" }
+        ],
+        "responses": {
+          "200": { "description": "Messages page" },
+          "403": { "description": "Not a member of this conversation" },
+          "404": { "description": "Conversation not found" }
+        }
+      }
+    },
+    "/conversations/{conversationId}/seen": {
+      "patch": {
+        "tags": ["Conversations"],
+        "summary": "Mark a conversation as seen by the current user",
+        "parameters": [
+          { "name": "conversationId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Marked as seen" },
+          "403": { "description": "Not a member of this conversation" },
+          "404": { "description": "Conversation not found" }
+        }
+      }
+    },
+    "/messages/direct": {
+      "post": {
+        "tags": ["Messages"],
+        "summary": "Send a direct message, creating the conversation if needed",
+        "responses": {
+          "201": { "description": "Message sent" },
+          "400": { "description": "Content is required" },
+          "403": { "description": "Not friends with the recipient" }
+        }
+      }
+    },
+    "/messages/group": {
+      "post": {
+        "tags": ["Messages"],
+        "summary": "Send a message to a group conversation",
+        "responses": {
+          "201": { "description": "Message sent" },
+          "400": { "description": "Content is required" },
+          "403": { "description": "Not a member of this group" }
+        }
+      }
+    }
+  }
+}
