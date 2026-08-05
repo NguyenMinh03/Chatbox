@@ -1,4 +1,4 @@
-import Logout from '@/components/auth/logout'
+import Logout from '@/components/auth/Logout'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { Button } from '@base-ui/react/button';
 import React from 'react'
