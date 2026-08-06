@@ -4,7 +4,12 @@ import SignInPage from './pages/SignInPage';
 import ChatAppPage from './pages/ChatAppPage'
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import { useThemeStore } from './stores/useThemeStore';
+import { useEffect } from 'react';
 function App() {
+  const { isDark, setTheme } = useThemeStore();
+  useEffect(() => {setTheme(isDark)}, [isDark, setTheme]);
+   
   return (
     <>
       <Toaster richColors/>
@@ -20,8 +25,6 @@ function App() {
               element={<ChatAppPage/>}
             />
           </Route>
-          {/* create Protected routes here */}
-          <Route path="/" element={<ChatAppPage />} />
         </Routes>
       </BrowserRouter>
     </>
