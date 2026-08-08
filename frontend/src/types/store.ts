@@ -29,4 +29,5 @@ export interface ChatState {
   loading: boolean;
   reset: () => void;
   setActiveConversationId: (conversationId: string | null) => void;
+  fetchConversations: () => Promise<void>;
 }
