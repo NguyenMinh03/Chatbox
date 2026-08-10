@@ -1,4 +1,3 @@
-import React from 'react'
 import type { Conversation } from '@/types/chat'
 import ChatCard from './ChatCard'
 import { useAuthStore } from '@/stores/useAuthStore'
