@@ -28,6 +28,6 @@ export interface ChatState {
   activeConversationId: string | null;
   loading: boolean;
   reset: () => void;
-  setActiveConversationId: (conversationId: string | null) => void;
+  setActiveConversation: (conversationId: string | null) => void;
   fetchConversations: () => Promise<void>;
 }

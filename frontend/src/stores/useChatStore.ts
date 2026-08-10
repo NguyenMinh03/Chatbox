@@ -9,7 +9,7 @@ persist((set,get) => ({
     messages: {},
     activeConversationId: null,
     loading: false,
-    setActiveConversationId: (id) => set({activeConversationId: id}),
+    setActiveConversation: (id) => set({activeConversationId: id}),
     reset: () => {set({conversations: [], messages: {}, activeConversationId: null, loading: false})},
     fetchConversations: async () => {
         try {
