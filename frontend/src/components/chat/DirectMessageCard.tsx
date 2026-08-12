@@ -6,9 +6,10 @@ import { cn } from '@/lib/utils'
 import UserAvatar from "./UserAvatar";
 import StatusBadge from "./StatusBadge";
 import UnreadCountBadge from "./UnreadCountBadge";
+
 const DirectMessageCard = ({ convo }: {convo: Conversation}) => {
       const  { user } = useAuthStore();
-      const {activeConversationId, setActiveConversation, messages} = useChatStore();
+      const {activeConversationId, setActiveConversation, messages, fetchMessages} = useChatStore();
       if (!user) return null;
       const otherUser = convo.participants.find((p) => p._id !== user._id);
       if (!otherUser) return null;
@@ -18,6 +19,7 @@ const DirectMessageCard = ({ convo }: {convo: Conversation}) => {
         setActiveConversation(id);
         if(!messages[id]){
           //todo: fetch messages for this conversation
+          await fetchMessages();
         }
       };
   return (
