@@ -1,11 +1,45 @@
-import React from 'react'
+import { useChatStore } from "@/stores/useChatStore";
+import ChatWelcomeScreen from "./ChatWelcomeScreen";
+import { SidebarInset } from "../ui/sidebar";
+import ChatWindowHeader from "./ChatWindowHeader";
+import ChatWindowBody from "./ChatWindowBody";
+import MessageInput from "./MessageInput";
+import { useEffect } from "react";
+import ChatWindowSkeleton from "../skeleton/ChatWindowSkeleton";
 
 const ChatWindowLayout = () => {
-  return (
-    <div>
-      Chat Window Layout
-    </div>
-  )
-}
+  const {
+    activeConversationId,
+    conversations,
+    messageLoading: loading,
 
-export default ChatWindowLayout
+  } = useChatStore();
+
+  const selectedConvo =
+    conversations.find((c) => c._id === activeConversationId) ?? null;
+    
+  if (!selectedConvo) {
+    return <ChatWelcomeScreen/>;
+  }
+
+  if (loading) {
+    return <ChatWindowSkeleton />;
+  }
+
+  return (
+    <SidebarInset className="flex flex-col h-full flex-1 overflow-hidden rounded-sm shadow-md">
+      {/* Header */}
+      <ChatWindowHeader chat={selectedConvo} />
+
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto bg-primary-foreground">
+        <ChatWindowBody />
+      </div>
+
+      {/* Footer */}
+      <MessageInput selectedConvo={selectedConvo} />
+    </SidebarInset>
+  );
+};
+
+export default ChatWindowLayout;
