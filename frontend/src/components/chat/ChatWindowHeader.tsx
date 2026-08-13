@@ -1,4 +1,4 @@
-const ChatWindowHearder = () => {
+const ChatWindowHeader = () => {
   return (
     <div>
       
@@ -6,4 +6,4 @@ const ChatWindowHearder = () => {
   )
 }
 
-export default ChatWindowHearder
+export default ChatWindowHeader
