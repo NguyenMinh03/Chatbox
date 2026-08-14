@@ -4,7 +4,6 @@ import { SidebarInset } from "../ui/sidebar";
 import ChatWindowHeader from "./ChatWindowHeader";
 import ChatWindowBody from "./ChatWindowBody";
 import MessageInput from "./MessageInput";
-import { useEffect } from "react";
 import ChatWindowSkeleton from "./ChatWindowSkeleton";
 
 const ChatWindowLayout = () => {

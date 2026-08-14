@@ -6,26 +6,37 @@ import { useAuthStore } from "./useAuthStore";
 
 export const useChatStore = create<ChatState>() (
 
-persist((set,get) => ({
-    conversations: [],
-    messages: {},
-    activeConversationId: null,
-    convoLoading: false,
-    messageLoading: false,
-    setActiveConversation: (id) => set({activeConversationId: id}),
-    reset: () => {set({conversations: [], messages: {}, activeConversationId: null, convoLoading: false, messageLoading:false})},
-    fetchConversations: async () => {
+persist(
+    (set, get) => ({
+      conversations: [],
+      messages: {},
+      activeConversationId: null,
+      convoLoading: false, // convo loading
+      messageLoading: false,
+      loading: false,
+
+      setActiveConversation: (id) => set({ activeConversationId: id }),
+      reset: () => {
+        set({
+          conversations: [],
+          messages: {},
+          activeConversationId: null,
+          convoLoading: false,
+          messageLoading: false,
+        });
+      },
+      fetchConversations: async () => {
         try {
-            set({convoLoading: true});
-            const {conversations} = await chatService.fetchConversations();
-            set({conversations, convoLoading: false});
+          set({ convoLoading: true });
+          const { conversations } = await chatService.fetchConversations();
+
+          set({ conversations, convoLoading: false });
+        } catch (error) {
+          console.error("Fail during fetchConversations:", error);
+          set({ convoLoading: false });
         }
-        catch (error) {
-            console.error("Failed to fetch conversations:", error);
-            set({convoLoading: false});
-        }
-    },
-    fetchMessages: async (conversationId) => {
+      },
+      fetchMessages: async (conversationId) => {
         const { activeConversationId, messages } = get();
         const { user } = useAuthStore.getState();
 
@@ -40,6 +51,7 @@ persist((set,get) => ({
         if (nextCursor === null) return;
 
         set({ messageLoading: true });
+
         try {
           const { messages: fetched, cursor } = await chatService.fetchMessages(
             convoId,
@@ -71,7 +83,37 @@ persist((set,get) => ({
         } finally {
           set({ messageLoading: false });
         }
-    },
+      },
+      sendDirectMessage: async (recipientId, content, imgUrl) => {
+        try {
+          const { activeConversationId } = get();
+          await chatService.sendDirectMessage(
+            recipientId,
+            content,
+            imgUrl,
+            activeConversationId || undefined
+          );
+          set((state) => ({
+            conversations: state.conversations.map((c) =>
+              c._id === activeConversationId ? { ...c, seenBy: [] } : c
+            ),
+          }));
+        } catch (error) {
+          console.error("Fail while send direct message", error);
+        }
+      },
+      sendGroupMessage: async (conversationId, content, imgUrl) => {
+        try {
+          await chatService.sendGroupMessage(conversationId, content, imgUrl);
+          set((state) => ({
+            conversations: state.conversations.map((c) =>
+              c._id === get().activeConversationId ? { ...c, seenBy: [] } : c
+            ),
+          }));
+        } catch (error) {
+          console.error("Fail while send group message", error);
+        }
+      },
 }),
 {
     name: "chat-storage",

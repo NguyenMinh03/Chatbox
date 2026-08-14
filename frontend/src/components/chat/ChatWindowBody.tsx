@@ -5,6 +5,7 @@ import MessageItem from "./MessageItem.tsx";
 const ChatWindowBody = () => {
     const { activeConversationId, conversations, messages: allMessages} = useChatStore();
     const messages = allMessages[activeConversationId!]?.items ?? [];
+    const reversedMessages = [...messages].reverse();
     const selectedConvo = conversations.find((c) => c._id === activeConversationId);
     if (!selectedConvo) {
     return <ChatWelcomeScreen />;
@@ -20,12 +21,12 @@ const ChatWindowBody = () => {
     <div className="p-4 bg-primary-foreground h-full flex flex-col overflow-hidden">
       <div className="flex flex-col-reverse overflow-y-auto overflow-x-hidden beautiful-scrollbar">
             <>
-            {messages.map((message,index)=> (
+            {reversedMessages.map((message,index)=> (
                 <MessageItem
                 key={message._id ?? index}
                 message={message}
                 index={index}
-                messages={messages}
+                messages={reversedMessages}
                 selectedConvo={selectedConvo}
                 lastMessageStatus="delivered"
                 />
