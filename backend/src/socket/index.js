@@ -1,39 +1,49 @@
 import { Server } from "socket.io";
-import jwt from "jsonwebtoken";
+import http from "http";
+import express from "express";
+import { socketAuthMiddleware } from "../middlewares/socketMiddleware.js";
 import { getUserConversationsForSocketIO } from "../controllers/conversationController.js";
 
-export let io;
+const app = express();
 
-export const initSocket = (server) => {
-  io = new Server(server, {
-    cors: {
-      origin: process.env.CLIENT_URL,
-      credentials: true,
-    },
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  },
+});
+
+io.use(socketAuthMiddleware);
+
+const onlineUsers = new Map(); // {userId: socketId}
+
+io.on("connection", async (socket) => {
+  const user = socket.user;
+
+  // console.log(`${user.displayName} online with socket ${socket.id}`);
+
+  onlineUsers.set(user._id, socket.id);
+
+  io.emit("online-users", Array.from(onlineUsers.keys()));
+
+  const conversationIds = await getUserConversationsForSocketIO(user._id);
+  conversationIds.forEach((id) => {
+    socket.join(id);
   });
 
-  io.use((socket, next) => {
-    try {
-      const token = socket.handshake.auth?.token;
-      if (!token) {
-        return next(new Error("Unauthorized"));
-      }
-
-      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-      socket.userId = decoded.userId;
-      next();
-    } catch (error) {
-      next(new Error("Unauthorized"));
-    }
+  socket.on("join-conversation", (conversationId) => {
+    socket.join(conversationId);
   });
 
-  io.on("connection", async (socket) => {
-    const userId = socket.userId;
-    socket.join(userId);
+  socket.join(user._id.toString());
 
-    const conversationIds = await getUserConversationsForSocketIO(userId);
-    conversationIds.forEach((conversationId) => socket.join(conversationId));
+  socket.on("disconnect", () => {
+    onlineUsers.delete(user._id);
+    io.emit("online-users", Array.from(onlineUsers.keys()));
+    /* console.log(`socket disconnected: ${socket.id}`); */
   });
+});
 
-  return io;
-};
+export { io, app, server };
