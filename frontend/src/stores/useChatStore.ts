@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import type { ChatState } from "@/types/store";
 import { chatService } from "@/services/chatService";
 import { useAuthStore } from "./useAuthStore";
+import { useSocketStore } from "./useSocketStore";
 
 export const useChatStore = create<ChatState>() (
 
@@ -79,7 +80,7 @@ persist(
             };
           });
         } catch (error) {
-          console.error("Lỗi xảy ra khi fetchMessages:", error);
+          console.error("fail when fetchMessages:", error);
         } finally {
           set({ messageLoading: false });
         }
@@ -112,6 +113,121 @@ persist(
           }));
         } catch (error) {
           console.error("Fail while send group message", error);
+        }
+      },
+      addMessage: async (message) => {
+        try {
+          const { user } = useAuthStore.getState();
+          const { fetchMessages } = get();
+
+          message.isOwn = message.senderId === user?._id;
+
+          const convoId = message.conversationId;
+
+          let prevItems = get().messages[convoId]?.items ?? [];
+
+          if (prevItems.length === 0) {
+            await fetchMessages(message.conversationId);
+            prevItems = get().messages[convoId]?.items ?? [];
+          }
+
+          set((state) => {
+            if (prevItems.some((m) => m._id === message._id)) {
+              return state;
+            }
+
+            return {
+              messages: {
+                ...state.messages,
+                [convoId]: {
+                  items: [...prevItems, message],
+                  hasMore: state.messages[convoId].hasMore,
+                  nextCursor: state.messages[convoId].nextCursor ?? undefined,
+                },
+              },
+            };
+          });
+        } catch (error) {
+          console.error("Lỗi xảy khi ra add message:", error);
+        }
+      },
+      updateConversation: (conversation) => {
+        set((state) => ({
+          conversations: state.conversations.map((c) =>
+            c._id === conversation._id ? { ...c, ...conversation } : c
+          ),
+        }));
+      },
+       markAsSeen: async () => {
+        try {
+          const { user } = useAuthStore.getState();
+          const { activeConversationId, conversations } = get();
+
+          if (!activeConversationId || !user) {
+            return;
+          }
+
+          const convo = conversations.find((c) => c._id === activeConversationId);
+
+          if (!convo) {
+            return;
+          }
+
+          if ((convo.unreadCounts?.[user._id] ?? 0) === 0) {
+            return;
+          }
+
+          await chatService.markAsSeen(activeConversationId);
+
+          set((state) => ({
+            conversations: state.conversations.map((c) =>
+              c._id === activeConversationId && c.lastMessage
+                ? {
+                    ...c,
+                    unreadCounts: {
+                      ...c.unreadCounts,
+                      [user._id]: 0,
+                    },
+                  }
+                : c
+            ),
+          }));
+        } catch (error) {
+          console.error("fail when call marAsSeen in store", error);
+        }
+      },
+       addConvo: (convo) => {
+        set((state) => {
+          const exists = state.conversations.some(
+            (c) => c._id.toString() === convo._id.toString()
+          );
+
+          return {
+            conversations: exists
+              ? state.conversations
+              : [convo, ...state.conversations],
+            activeConversationId: convo._id,
+          };
+        });
+      },
+      createConversation: async (type, name, memberIds) => {
+        try {
+          set({ loading: true });
+          const conversation = await chatService.createConversation(
+            type,
+            name,
+            memberIds
+          );
+
+          get().addConvo(conversation);
+
+          useSocketStore
+            .getState()
+            .socket?.emit("join-conversation", conversation._id);
+        } catch (error) {
+          console.error("fail when create createConversation in store", error);
+        } finally {
+          set({ loading: false });
         }
       },
 }),
