@@ -68,7 +68,7 @@ export function SignupForm({
                     {...register("firstname")}
                   />
                   {errors.firstname && (
-                    <p className="text-sm text-destructive">{errors.firstname.message}</p>
+                    <p className="error-message">{errors.firstname.message}</p>
                   )}
                 </div>
                 <div className="space-y-2">
@@ -81,7 +81,7 @@ export function SignupForm({
                     {...register("lastname")}
                   />
                   {errors.lastname && (
-                    <p className="text-sm text-destructive">{errors.lastname.message}</p>
+                    <p className="error-message">{errors.lastname.message}</p>
                   )}
                 </div>
               </div>
@@ -97,7 +97,7 @@ export function SignupForm({
                   {...register("username")}
                 />
                 {errors.username && (
-                  <p className="text-sm text-destructive">{errors.username.message}</p>
+                  <p className="error-message">{errors.username.message}</p>
                 )}
               </div>
               {/*Email */}
@@ -112,7 +112,7 @@ export function SignupForm({
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                  <p className="error-message">{errors.email.message}</p>
                 )}
               </div>
               {/*Password */}
@@ -127,11 +127,11 @@ export function SignupForm({
                   {...register("password")}
                 />
                 {errors.password && (
-                  <p className="text-sm text-destructive">{errors.password.message}</p>
+                  <p className="error-message">{errors.password.message}</p>
                 )}
               </div>
               {submitError && (
-                <p className="text-sm text-destructive text-center">{submitError}</p>
+                <p className="error-message text-center">{submitError}</p>
               )}
               {/*Sign Up Button */}
               <Button type="submit" className="w-full" disabled={isSubmitting}>
