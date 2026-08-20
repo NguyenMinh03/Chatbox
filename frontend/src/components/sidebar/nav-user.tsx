@@ -23,6 +23,8 @@ import {
 import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, UserIcon, Bell } from "lucide-react"
 import type { User } from "@/types/user";
 import Logout from "../auth/Logout";
+import { useState } from "react";
+import FriendRequestDialog from "../friendRequest/FriendRequestDialog";
 
 export function NavUser({
   user,
@@ -31,9 +33,11 @@ export function NavUser({
   
   
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+  const [friendRequestOpen, setfriendRequestOpen] = useState(false);
   return (
-    <SidebarMenu>
+    <>
+        <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -78,7 +82,7 @@ export function NavUser({
                 />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setfriendRequestOpen(true)}>
                 <Bell className="text-muted-foreground dark:group-focus:!text-accent-foreground"
                 />
                 Notification
@@ -92,5 +96,10 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
+    <FriendRequestDialog
+    open={friendRequestOpen}
+    setOpen={setfriendRequestOpen}/>
+    </>
+
   )
 }

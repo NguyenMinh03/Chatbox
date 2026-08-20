@@ -31,7 +31,7 @@ export const useFriendStore = create<FriendState>((set, get) => ({
       set({ loading: false });
     }
   },
-  getAllFriendRequest: async() => {
+  getAllFriendRequests: async() => {
     try {
       set({loading: true});
       const result = await friendService.getAllFriendRequest();
