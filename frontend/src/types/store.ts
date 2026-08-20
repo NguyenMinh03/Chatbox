@@ -85,7 +85,10 @@ export interface FriendState {
   sentList: FriendRequest[];
   searchByUsername: (username: string) => Promise<User | null>;
   addFriend: (to: string, message?: string) => Promise<string>;
-
+  getAllFriendRequest: () => Promise<void>;
+  acceptRequest:(requestId:string) => Promise<void>;
+  declineRequest:(requestId:string) => Promise<void>;
+  getFriends: () => Promise<void>;
 }
 
 export interface UserState {

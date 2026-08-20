@@ -26,7 +26,7 @@ export const friendService = {
       const res = await api.post(`/friends/requests/${requestId}/accept`);
       return res.data.requestAcceptedBy;
     } catch (error) {
-      console.error("Fail in acceptRequest", error);
+      console.error("Fail in send acceptRequest", error);
     }
   },
 
@@ -34,7 +34,7 @@ export const friendService = {
     try {
       await api.post(`/friends/requests/${requestId}/decline`);
     } catch (error) {
-      console.error("Fail in declineRequest", error);
+      console.error("Fail in send declineRequest", error);
     }
   },
 
