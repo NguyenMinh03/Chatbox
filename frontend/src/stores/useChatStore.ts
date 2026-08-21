@@ -230,6 +230,30 @@ persist(
           set({ loading: false });
         }
       },
+      removeConvo: (conversationId) => {
+        set((state) => {
+          const { [conversationId]: _removed, ...restMessages } = state.messages;
+
+          return {
+            conversations: state.conversations.filter(
+              (c) => c._id !== conversationId
+            ),
+            messages: restMessages,
+            activeConversationId:
+              state.activeConversationId === conversationId
+                ? null
+                : state.activeConversationId,
+          };
+        });
+      },
+      deleteConversation: async (conversationId) => {
+        try {
+          await chatService.deleteConversation(conversationId);
+          get().removeConvo(conversationId);
+        } catch (error) {
+          console.error("fail when call deleteConversation in store", error);
+        }
+      },
 }),
 {
     name: "chat-storage",

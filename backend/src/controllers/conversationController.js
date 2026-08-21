@@ -185,6 +185,39 @@ export const getUserConversationsForSocketIO = async (userId) => {
   }
 };
 
+export const deleteConversation = async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const userId = req.user._id.toString();
+
+    const conversation = await Conversation.findById(conversationId).lean();
+
+    if (!conversation) {
+      return res.status(404).json({ message: "Conversation does not exist" });
+    }
+
+    const isParticipant = conversation.participants.some(
+      (p) => p.userId.toString() === userId
+    );
+
+    if (!isParticipant) {
+      return res.status(403).json({ message: "You are not a member of this conversation" });
+    }
+
+    await Promise.all([
+      Conversation.findByIdAndDelete(conversationId),
+      Message.deleteMany({ conversationId }),
+    ]);
+
+    io.to(conversationId).emit("conversation-deleted", { conversationId });
+
+    return res.status(200).json({ message: "Conversation deleted", conversationId });
+  } catch (error) {
+    console.error("Error deleting conversation", error);
+    return res.status(500).json({ message: "System error" });
+  }
+};
+
 export const markAsSeen = async (req, res) => {
   try {
     const { conversationId } = req.params;

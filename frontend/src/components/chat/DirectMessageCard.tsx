@@ -10,7 +10,7 @@ import { useSocketStore } from '@/stores/useSocketStore'
 
 const DirectMessageCard = ({ convo }: {convo: Conversation}) => {
       const  { user } = useAuthStore();
-      const {activeConversationId, setActiveConversation, messages, fetchMessages} = useChatStore();
+      const {activeConversationId, setActiveConversation, messages, fetchMessages, deleteConversation} = useChatStore();
       const {onlineUsers} = useSocketStore();
       if (!user) return null;
       const otherUser = convo.participants.find((p) => p._id !== user._id);
@@ -32,6 +32,7 @@ const DirectMessageCard = ({ convo }: {convo: Conversation}) => {
     timestamp={convo.lastMessage?.createdAt ? new Date(convo.lastMessage.createdAt) : undefined}
     isActive={activeConversationId === convo._id}
     onSelect={handleSelectConversation}
+    onDelete={deleteConversation}
     unreadCount={unreadCount}
     leftSection={
       <>
