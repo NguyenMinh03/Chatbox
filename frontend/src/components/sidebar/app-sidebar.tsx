@@ -21,9 +21,13 @@ import AddFriendModal from "../chat/AddFriendModal";
 import DirectMessageList from "../chat/DirectMessageList";
 import { useThemeStore } from "@/stores/useThemeStore";
 import { useAuthStore } from "@/stores/useAuthStore";
+import ConversationSkeleton from "../skeleton/ConversationSkeleton";
+import { useChatStore } from "@/stores/useChatStore";
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {isDark, toggleTheme} = useThemeStore();
-    const { user } = useAuthStore();
+  const { user } = useAuthStore();
+  const { convoLoading } = useChatStore();
   return (
     <Sidebar variant="inset" {...props}>
       {/*Header */}
@@ -61,13 +65,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
         {/*Groups chat */}
         <SidebarGroup>
-          
           <div className="flex items-center justify-between">
             <SidebarGroupLabel className="uppercase">Group Chat</SidebarGroupLabel>
             <NewGroupChatModal />
           </div>
-          <SidebarGroupContent>
-            <GroupChatList />
+           <SidebarGroupContent>
+            {convoLoading ? <ConversationSkeleton /> : <GroupChatList />}
           </SidebarGroupContent>
         </SidebarGroup>
         {/*Direct Messages */}
@@ -76,8 +79,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupAction title="Create new friend" className="cursor-pointer" >
             <AddFriendModal />
           </SidebarGroupAction>
-          <SidebarGroupContent>
-            <DirectMessageList />
+           <SidebarGroupContent>
+            {convoLoading ? <ConversationSkeleton /> : <DirectMessageList />}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
