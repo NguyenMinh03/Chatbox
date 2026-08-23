@@ -58,6 +58,6 @@ export const formatMessageTime = (date: Date) => {
   } else {
     return `${date.getDate()}/${
       date.getMonth() + 1
-    }/${date.getFullYear()} ${timeStr}`; // ví dụ: "15/12/2023 18:40"
+    }/${date.getFullYear()} ${timeStr}`; // e.g.: "15/12/2023 18:40"
   }
 };

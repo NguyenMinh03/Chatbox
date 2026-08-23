@@ -148,7 +148,7 @@ persist(
             };
           });
         } catch (error) {
-          console.error("Lỗi xảy khi ra add message:", error);
+          console.error("Error occurred while adding message:", error);
         }
       },
       updateConversation: (conversation) => {

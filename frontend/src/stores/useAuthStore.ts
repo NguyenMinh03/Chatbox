@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ loading: true });
 
-          //  gọi api
+          // call api
           await authService.signUp(username, password, email, firstName, lastName);
 
           toast.success(
