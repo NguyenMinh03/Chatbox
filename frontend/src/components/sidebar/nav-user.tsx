@@ -20,7 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, UserIcon, Bell } from "lucide-react"
+import { ChevronsUpDownIcon, UserIcon, Bell } from "lucide-react"
 import type { User } from "@/types/user";
 import Logout from "../auth/Logout";
 import { useState } from "react";
