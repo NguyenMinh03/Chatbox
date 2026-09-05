@@ -9,6 +9,10 @@ export interface User {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export type UpdateProfilePayload = Partial<
+  Pick<User, "displayName" | "username" | "email" | "phone" | "bio">
+>;
 export interface Friend {
   _id: string;
   username: string;

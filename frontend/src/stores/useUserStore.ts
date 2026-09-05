@@ -24,4 +24,25 @@ export const useUserStore = create<UserState>((set, get) => ({
       toast.error("Upload avatar Fail!");
     }
   },
+
+  updateProfile: async (payload) => {
+    try {
+      const { user, setUser } = useAuthStore.getState();
+      const updatedUser = await userService.updateProfile(payload);
+
+      if (user) {
+        setUser({ ...user, ...updatedUser });
+      }
+
+      toast.success("Profile updated!");
+      return true;
+    } catch (error) {
+      console.error("Fail when updateProfile", error);
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Failed to update profile";
+      toast.error(message);
+      return false;
+    }
+  },
 }));
