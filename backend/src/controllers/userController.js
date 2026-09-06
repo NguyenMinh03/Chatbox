@@ -1,4 +1,6 @@
+import bcrypt from "bcrypt";
 import User from "../models/User.js";
+import Session from "../models/Session.js";
 import { uploadImageFromBuffer } from "../middlewares/uploadMiddleware.js";
 
 export const authMe = async (req, res) => {
@@ -105,6 +107,48 @@ export const updateProfile = async (req, res) => {
     }
     console.error("Fail when updateProfile", error);
     return res.status(500).json({ message: "Failed to update profile" });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Current and new password are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: "New password must be at least 6 characters long" });
+    }
+
+    if (newPassword === currentPassword) {
+      return res
+        .status(400)
+        .json({ message: "New password must be different from the current password" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.hashedPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    user.hashedPassword = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    // Invalidate refresh tokens on all devices so the new password is required to sign in again
+    await Session.deleteMany({ userId });
+
+    return res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error("Fail when changePassword", error);
+    return res.status(500).json({ message: "Failed to change password" });
   }
 };
 

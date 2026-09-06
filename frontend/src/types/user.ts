@@ -13,6 +13,11 @@ export interface User {
 export type UpdateProfilePayload = Partial<
   Pick<User, "displayName" | "username" | "email" | "phone" | "bio">
 >;
+
+export type ChangePasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+};
 export interface Friend {
   _id: string;
   username: string;

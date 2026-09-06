@@ -1,0 +1,20 @@
+# Run from the Chatbox project root (C:\Users\minhd\OneDrive\Desktop\Chatbox)
+
+# 1) Review what's changed (optional but recommended)
+git status
+
+# 2) Commit the color theme change (index.css only)
+git add frontend/src/index.css
+git commit -m "Switch primary theme color from purple/pink to blue"
+
+# 3) Commit the account settings features (editable profile + change password)
+git add backend/src/controllers/userController.js backend/src/routes/userRoute.js frontend/src/types/user.ts frontend/src/types/store.ts frontend/src/services/userService.ts frontend/src/stores/useUserStore.ts frontend/src/components/profile/PersonalInfoForm.tsx frontend/src/components/profile/PrivacySettings.tsx frontend/src/components/profile/ChangePasswordDialog.tsx
+git commit -m "Add editable profile settings and change password feature
+
+- Add PATCH /api/users/me to update displayName, username, email, phone, bio
+- Add PATCH /api/users/password to change password (verifies current password, invalidates other sessions)
+- Wire PersonalInfoForm to the new profile endpoint with validation
+- Add ChangePasswordDialog with current/new/confirm password validation"
+
+# 4) Push both commits to GitHub
+git push origin main

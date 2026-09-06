@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import type { UpdateProfilePayload, User } from "@/types/user";
+import type { ChangePasswordPayload, UpdateProfilePayload, User } from "@/types/user";
 
 export const userService = {
   uploadAvatar: async (formData: FormData) => {
@@ -17,5 +17,10 @@ export const userService = {
   updateProfile: async (payload: UpdateProfilePayload) => {
     const res = await api.patch("/users/me", payload);
     return res.data.user as User;
+  },
+
+  changePassword: async (payload: ChangePasswordPayload) => {
+    const res = await api.patch("/users/password", payload);
+    return res.data as { message: string };
   },
 };

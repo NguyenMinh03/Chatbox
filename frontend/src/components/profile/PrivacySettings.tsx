@@ -7,6 +7,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import ChangePasswordDialog from "./ChangePasswordDialog";
 
 const PrivacySettings = () => (
   <Card className="glass-strong border-border/30">
@@ -22,13 +23,7 @@ const PrivacySettings = () => (
 
     <CardContent className="space-y-6">
       <div className="space-y-4">
-        <Button
-          variant="outline"
-          className="w-full justify-start glass-light border-border/30 hover:text-warning"
-        >
-          <Shield className="h-4 w-4 mr-2" />
-          Change Password
-        </Button>
+        <ChangePasswordDialog />
 
         <Button
           variant="outline"

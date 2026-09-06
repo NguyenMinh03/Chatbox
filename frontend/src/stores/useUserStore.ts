@@ -45,4 +45,19 @@ export const useUserStore = create<UserState>((set, get) => ({
       return false;
     }
   },
+
+  changePassword: async (payload) => {
+    try {
+      await userService.changePassword(payload);
+      toast.success("Password changed successfully!");
+      return true;
+    } catch (error) {
+      console.error("Fail when changePassword", error);
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Failed to change password";
+      toast.error(message);
+      return false;
+    }
+  },
 }));
