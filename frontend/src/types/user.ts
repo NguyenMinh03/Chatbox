@@ -1,3 +1,11 @@
+export interface NotificationPreferences {
+  directMessages: boolean;
+  groupMessages: boolean;
+  friendRequests: boolean;
+  sound: boolean;
+  desktopAlerts: boolean;
+}
+
 export interface User {
   _id: string;
   username: string;
@@ -6,6 +14,7 @@ export interface User {
   avatarUrl?: string;
   bio?: string;
   phone?: string;
+  notificationPreferences?: NotificationPreferences;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -18,6 +27,8 @@ export type ChangePasswordPayload = {
   currentPassword: string;
   newPassword: string;
 };
+
+export type UpdateNotificationPreferencesPayload = Partial<NotificationPreferences>;
 export interface Friend {
   _id: string;
   username: string;

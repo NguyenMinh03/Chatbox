@@ -4,6 +4,7 @@ import type {
   ChangePasswordPayload,
   Friend,
   FriendRequest,
+  UpdateNotificationPreferencesPayload,
   UpdateProfilePayload,
   User,
 } from "./user";
@@ -97,10 +98,14 @@ export interface FriendState {
   acceptRequest:(requestId:string) => Promise<void>;
   declineRequest:(requestId:string) => Promise<void>;
   getFriends: () => Promise<void>;
+  addReceivedRequest: (request: FriendRequest) => void;
 }
 
 export interface UserState {
   updateAvatarUrl: (formData: FormData) => Promise<void>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<boolean>;
   changePassword: (payload: ChangePasswordPayload) => Promise<boolean>;
+  updateNotificationPreferences: (
+    payload: UpdateNotificationPreferencesPayload
+  ) => Promise<boolean>;
 }

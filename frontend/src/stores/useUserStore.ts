@@ -60,4 +60,24 @@ export const useUserStore = create<UserState>((set, get) => ({
       return false;
     }
   },
+
+  updateNotificationPreferences: async (payload) => {
+    try {
+      const { user, setUser } = useAuthStore.getState();
+      const updatedUser = await userService.updateNotificationPreferences(payload);
+
+      if (user) {
+        setUser({ ...user, ...updatedUser });
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Fail when updateNotificationPreferences", error);
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Failed to update notification settings";
+      toast.error(message);
+      return false;
+    }
+  },
 }));

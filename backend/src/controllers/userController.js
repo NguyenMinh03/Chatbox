@@ -152,6 +152,45 @@ export const changePassword = async (req, res) => {
   }
 };
 
+export const updateNotificationPreferences = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { directMessages, groupMessages, friendRequests, sound, desktopAlerts } = req.body;
+
+    const updates = {};
+    if (directMessages !== undefined) {
+      updates["notificationPreferences.directMessages"] = !!directMessages;
+    }
+    if (groupMessages !== undefined) {
+      updates["notificationPreferences.groupMessages"] = !!groupMessages;
+    }
+    if (friendRequests !== undefined) {
+      updates["notificationPreferences.friendRequests"] = !!friendRequests;
+    }
+    if (sound !== undefined) {
+      updates["notificationPreferences.sound"] = !!sound;
+    }
+    if (desktopAlerts !== undefined) {
+      updates["notificationPreferences.desktopAlerts"] = !!desktopAlerts;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select("-hashedPassword");
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ user: updatedUser });
+  } catch (error) {
+    console.error("Fail when updateNotificationPreferences", error);
+    return res.status(500).json({ message: "Failed to update notification preferences" });
+  }
+};
+
 export const uploadAvatar = async (req, res) => {
   try {
     const file = req.file;

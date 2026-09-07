@@ -1,6 +1,7 @@
 import Friend from '../models/Friend.js';
 import User from '../models/User.js';
 import FriendRequest from '../models/FriendRequest.js';
+import { io } from '../socket/index.js';
 
 export const sendFriendRequest = async(req,res) => {
     try {
@@ -41,6 +42,17 @@ export const sendFriendRequest = async(req,res) => {
             to,
             message
         });
+
+        const fromUser = await User.findById(from).select("_id displayName username avatarUrl");
+
+        io.to(to.toString()).emit("new-friend-request", {
+            _id: request._id,
+            from: fromUser,
+            message: request.message,
+            createdAt: request.createdAt,
+            updatedAt: request.updatedAt,
+        });
+
         return res.status(201).json({message: " Success send request", request})
     } catch (error) {
         console.error("Fail to send Friend request", error);

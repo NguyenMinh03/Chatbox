@@ -3,6 +3,8 @@ import { io, type Socket } from "socket.io-client";
 import { useAuthStore } from "./useAuthStore";
 import type { SocketState } from "@/types/store";
 import { useChatStore } from "./useChatStore";
+import { useFriendStore } from "./useFriendStore";
+import { notify } from "@/lib/notifications";
 
 const baseURL = import.meta.env.VITE_SOCKET_URL;
 
@@ -59,6 +61,40 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       }
 
       useChatStore.getState().updateConversation(updatedConversation);
+
+      const { user } = useAuthStore.getState();
+      const isOwnMessage = user?._id === message.senderId;
+
+      if (!isOwnMessage) {
+        const convoInfo = useChatStore
+          .getState()
+          .conversations.find((c) => c._id === conversation._id);
+        const isGroup = convoInfo?.type === "group";
+        const senderName =
+          convoInfo?.participants.find((p) => p._id === message.senderId)?.displayName ??
+          "Someone";
+
+        notify({
+          category: isGroup ? "groupMessages" : "directMessages",
+          title: isGroup
+            ? `${convoInfo?.group?.name ?? "Group chat"}`
+            : `New message from ${senderName}`,
+          body: isGroup
+            ? `${senderName}: ${message.content ?? "sent an image"}`
+            : message.content ?? "sent an image",
+        });
+      }
+    });
+
+    // new friend request
+    socket.on("new-friend-request", (request) => {
+      useFriendStore.getState().addReceivedRequest(request);
+
+      notify({
+        category: "friendRequests",
+        title: "New friend request",
+        body: `${request.from?.displayName ?? "Someone"} sent you a friend request`,
+      });
     });
 
     // read message

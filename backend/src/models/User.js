@@ -1,4 +1,16 @@
 import mongoose from 'mongoose';
+
+const notificationPreferencesSchema = new mongoose.Schema(
+    {
+        directMessages: { type: Boolean, default: true },
+        groupMessages: { type: Boolean, default: true },
+        friendRequests: { type: Boolean, default: true },
+        sound: { type: Boolean, default: true },
+        desktopAlerts: { type: Boolean, default: false },
+    },
+    { _id: false }
+);
+
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -37,6 +49,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         sparse: true,
 },
+    notificationPreferences: {
+        type: notificationPreferencesSchema,
+        default: () => ({}),
+    },
 }, { timestamps: true }
 );
 
