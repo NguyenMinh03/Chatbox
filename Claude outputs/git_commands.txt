@@ -1,0 +1,39 @@
+# Run from the Chatbox project root (C:\Users\minhd\OneDrive\Desktop\Chatbox)
+
+# 1) Review what's changed (optional but recommended)
+git status
+
+# 2) Commit the color theme change (index.css only)
+git add frontend/src/index.css
+git commit -m "Switch primary theme color from purple/pink to blue"
+
+# 3) Commit the account settings features (editable profile + change password)
+git add backend/src/controllers/userController.js backend/src/routes/userRoute.js frontend/src/types/user.ts frontend/src/types/store.ts frontend/src/services/userService.ts frontend/src/stores/useUserStore.ts frontend/src/components/profile/PersonalInfoForm.tsx frontend/src/components/profile/PrivacySettings.tsx frontend/src/components/profile/ChangePasswordDialog.tsx
+git commit -m "Add editable profile settings and change password feature
+
+- Add PATCH /api/users/me to update displayName, username, email, phone, bio
+- Add PATCH /api/users/password to change password (verifies current password, invalidates other sessions)
+- Wire PersonalInfoForm to the new profile endpoint with validation
+- Add ChangePasswordDialog with current/new/confirm password validation"
+
+# 4) Commit the notification settings feature
+git add backend/src/models/User.js backend/src/controllers/userController.js backend/src/routes/userRoute.js backend/src/controllers/friendController.js frontend/src/types/user.ts frontend/src/types/store.ts frontend/src/services/userService.ts frontend/src/stores/useUserStore.ts frontend/src/stores/useFriendStore.ts frontend/src/lib/notifications.ts frontend/src/stores/useSocketStore.ts frontend/src/components/profile/NotificationSettingsDialog.tsx frontend/src/components/profile/PrivacySettings.tsx
+git commit -m "Add notification settings with in-app toggles and desktop alerts
+
+- Add notificationPreferences sub-schema to User model (per-category toggles + sound + desktop alerts)
+- Add PATCH /api/users/notification-preferences endpoint
+- Emit new-friend-request socket event (previously friend requests had no real-time signal)
+- Add NotificationSettingsDialog with 5 auto-saving toggles
+- Add notify() helper using Web Notification + Web Audio APIs, wired into the socket message/friend-request handlers"
+
+# 5) Commit the report-a-user feature
+git add backend/src/models/Report.js backend/src/controllers/reportController.js backend/src/routes/reportRoute.js backend/src/server.js frontend/src/types/report.ts frontend/src/services/reportService.ts frontend/src/components/profile/ReportUserDialog.tsx frontend/src/components/profile/PrivacySettings.tsx
+git commit -m "Add ability to report a user
+
+- Add Report model (reporter, reportedUser, reason enum, optional details, status)
+- Add POST /api/reports endpoint (validates reason, blocks self-reports, checks target exists)
+- Add ReportUserDialog: search a user by username, pick a reason, optionally add details
+- Wire into Privacy & Security in place of the old placeholder Block & Report button"
+
+# 6) Push all commits to GitHub
+git push origin main

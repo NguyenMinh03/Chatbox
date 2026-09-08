@@ -8,6 +8,7 @@ import userRoutes from './routes/userRoute.js';
 import { protectedRoute } from './middlewares/authMiddleware.js';
 import messageRoute from './routes/messageRoute.js'; // Import the message routes
 import conversationRoute from './routes/conversationRoute.js'; // Import the conversation routes
+import reportRoute from './routes/reportRoute.js';
 import cors from "cors"
 import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
@@ -39,6 +40,7 @@ app.use('/api/users', userRoutes);
 app.use("/api/friends", friendRoute)
 app.use("/api/messages", messageRoute); // Add this line to include the message routes
 app.use("/api/conversations", conversationRoute); // Add this line to include the conversation routes
+app.use("/api/reports", reportRoute);
 connectDB().then(() => {
   server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

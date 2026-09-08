@@ -1,4 +1,4 @@
-import { Shield, ShieldBan } from "lucide-react";
+import { Shield } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import ChangePasswordDialog from "./ChangePasswordDialog";
 import NotificationSettingsDialog from "./NotificationSettingsDialog";
+import ReportUserDialog from "./ReportUserDialog";
 
 const PrivacySettings = () => (
   <Card className="glass-strong border-border/30">
@@ -28,13 +29,7 @@ const PrivacySettings = () => (
 
         <NotificationSettingsDialog />
 
-        <Button
-          variant="outline"
-          className="w-full justify-start glass-light border-border/30 hover:text-destructive"
-        >
-          <ShieldBan className="size-4 mr-2" />
-          Block & Report
-        </Button>
+        <ReportUserDialog />
       </div>
 
       <div className="pt-4 border-t border-border/30">
