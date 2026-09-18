@@ -229,14 +229,20 @@ const ReportUserDialog = () => {
               </Label>
               <select
                 id="reason"
-                className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30"
+                className="flex h-8 w-full rounded-lg border border-input bg-[hsl(var(--popover))] text-[hsl(var(--popover-foreground))] px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
                 {...register("reason", { required: "Please choose a reason" })}
               >
-                <option value="">Select a reason...</option>
+                <option
+                  value=""
+                  className="bg-[hsl(var(--popover))] text-[hsl(var(--popover-foreground))]"
+                >
+                  Select a reason...
+                </option>
                 {REPORT_REASONS.map(({ value, label }) => (
                   <option
                     key={value}
                     value={value}
+                    className="bg-[hsl(var(--popover))] text-[hsl(var(--popover-foreground))]"
                   >
                     {label}
                   </option>
