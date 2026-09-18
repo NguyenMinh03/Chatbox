@@ -19,12 +19,12 @@ const ProfileDialog = ({ open, setOpen }: ProfileDialogProps) => {
       open={open}
       onOpenChange={setOpen}
     >
-      <DialogContent className="overflow-y-auto max-h-[95vh] p-0 bg-transparent border-0 shadow-2xl">
+      <DialogContent className="overflow-y-auto max-h-[95vh] p-0 bg-transparent border-0 shadow-2xl sm:max-w-[33.6rem]">
         <div className="bg-gradient-glass">
-          <div className="max-w-4xl mx-auto p-4">
+          <div className="max-w-4xl mx-auto p-[1.4rem]">
             {/* heading */}
-            <DialogHeader className="mb-6">
-              <DialogTitle className="text-2xl font-bold text-foreground">
+            <DialogHeader className="mb-[2.1rem]">
+              <DialogTitle className="text-[2.1rem] font-bold text-foreground">
                 Profile & Settings
               </DialogTitle>
             </DialogHeader>
@@ -66,7 +66,7 @@ const ProfileDialog = ({ open, setOpen }: ProfileDialogProps) => {
               <TabsContent value="privacy">
                 <PrivacySettings />
               </TabsContent>
-           
+
             </Tabs>
           </div>
         </div>

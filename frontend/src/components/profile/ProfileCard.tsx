@@ -22,8 +22,8 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
   const isOnline = onlineUsers.includes(user._id) ? true : false;
 
   return (
-    <Card className="overflow-hidden p-0 h-52 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-      <CardContent className="mt-20 pb-8 flex flex-col sm:flex-row items-center sm:items-end gap-6">
+    <Card className="overflow-hidden p-0 h-[18.2rem] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+      <CardContent className="mt-[7rem] pb-[2.8rem] flex flex-col sm:flex-row items-center sm:items-end gap-[2.1rem]">
         <div className="relative">
           <UserAvatar
             type="profile"
@@ -32,17 +32,17 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
             className="ring-4 ring-white shadow-lg"
           />
          <AvatarUploader />
-          
+
         </div>
 
         {/* user info */}
         <div className="text-center sm:text-left flex-1">
-          <h1 className="text-2xl font-semibold tracking-tight text-white">
+          <h1 className="text-[2.1rem] font-semibold tracking-tight text-white">
             {user.displayName}
           </h1>
 
           {user.bio && (
-            <p className="text-white/70 text-sm mt-2 max-w-lg line-clamp-2">
+            <p className="text-white/70 text-[1.225rem] mt-2 max-w-lg line-clamp-2">
               {user.bio}
             </p>
           )}
