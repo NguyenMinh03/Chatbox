@@ -2,6 +2,7 @@ import type { Socket } from "socket.io-client";
 import type { Conversation, Message } from "./chat";
 import type {
   ChangePasswordPayload,
+  DeleteAccountPayload,
   Friend,
   FriendRequest,
   UpdateNotificationPreferencesPayload,
@@ -108,4 +109,5 @@ export interface UserState {
   updateNotificationPreferences: (
     payload: UpdateNotificationPreferencesPayload
   ) => Promise<boolean>;
+  deleteAccount: (payload: DeleteAccountPayload) => Promise<boolean>;
 }

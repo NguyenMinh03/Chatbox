@@ -28,6 +28,10 @@ export type ChangePasswordPayload = {
   newPassword: string;
 };
 
+export type DeleteAccountPayload = {
+  password: string;
+};
+
 export type UpdateNotificationPreferencesPayload = Partial<NotificationPreferences>;
 export interface Friend {
   _id: string;

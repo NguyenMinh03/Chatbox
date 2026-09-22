@@ -80,4 +80,22 @@ export const useUserStore = create<UserState>((set, get) => ({
       return false;
     }
   },
+
+  deleteAccount: async (payload) => {
+    try {
+      await userService.deleteAccount(payload);
+
+      toast.success("Your account has been deleted.");
+      useAuthStore.getState().clearState();
+
+      return true;
+    } catch (error) {
+      console.error("Fail when deleteAccount", error);
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Failed to delete account";
+      toast.error(message);
+      return false;
+    }
+  },
 }));

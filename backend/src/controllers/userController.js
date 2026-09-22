@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import Session from "../models/Session.js";
+import Friend from "../models/Friend.js";
+import FriendRequest from "../models/FriendRequest.js";
 import { uploadImageFromBuffer } from "../middlewares/uploadMiddleware.js";
 
 export const authMe = async (req, res) => {
@@ -188,6 +190,43 @@ export const updateNotificationPreferences = async (req, res) => {
   } catch (error) {
     console.error("Fail when updateNotificationPreferences", error);
     return res.status(500).json({ message: "Failed to update notification preferences" });
+  }
+};
+
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ message: "Password is required to delete your account" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.hashedPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Password is incorrect" });
+    }
+
+    // Clean up data owned by / referencing this user
+    await Promise.all([
+      Session.deleteMany({ userId }),
+      Friend.deleteMany({ $or: [{ userA: userId }, { userB: userId }] }),
+      FriendRequest.deleteMany({ $or: [{ from: userId }, { to: userId }] }),
+    ]);
+
+    await User.findByIdAndDelete(userId);
+
+    res.clearCookie("refreshToken");
+
+    return res.status(200).json({ message: "Account deleted successfully" });
+  } catch (error) {
+    console.error("Fail when deleteAccount", error);
+    return res.status(500).json({ message: "Failed to delete account" });
   }
 };
 

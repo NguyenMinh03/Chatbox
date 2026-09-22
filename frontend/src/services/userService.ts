@@ -1,6 +1,7 @@
 import api from "@/lib/axios";
 import type {
   ChangePasswordPayload,
+  DeleteAccountPayload,
   UpdateNotificationPreferencesPayload,
   UpdateProfilePayload,
   User,
@@ -32,5 +33,10 @@ export const userService = {
   updateNotificationPreferences: async (payload: UpdateNotificationPreferencesPayload) => {
     const res = await api.patch("/users/notification-preferences", payload);
     return res.data.user as User;
+  },
+
+  deleteAccount: async (payload: DeleteAccountPayload) => {
+    const res = await api.delete("/users/me", { data: payload });
+    return res.data as { message: string };
   },
 };

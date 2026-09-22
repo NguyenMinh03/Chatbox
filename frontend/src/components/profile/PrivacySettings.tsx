@@ -6,10 +6,10 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import ChangePasswordDialog from "./ChangePasswordDialog";
 import NotificationSettingsDialog from "./NotificationSettingsDialog";
 import ReportUserDialog from "./ReportUserDialog";
+import DeleteAccountDialog from "./DeleteAccountDialog";
 
 const PrivacySettings = () => (
   <Card className="glass-strong border-border/30">
@@ -34,12 +34,7 @@ const PrivacySettings = () => (
 
       <div className="pt-4 border-t border-border/30">
         <h4 className="font-medium mb-3 text-destructive">Danger Zone</h4>
-        <Button
-          variant="destructive"
-          className="w-full"
-        >
-          Delete Account
-        </Button>
+        <DeleteAccountDialog />
       </div>
     </CardContent>
   </Card>
