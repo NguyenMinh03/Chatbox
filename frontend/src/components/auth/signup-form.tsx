@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router"
+import { Link, useNavigate } from "react-router"
 import {z} from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuthStore } from "@/stores/useAuthStore"
@@ -141,9 +141,9 @@ export function SignupForm({
               <div className="text-center text-sm">
                 <p>
                   Already have an account?{" "}
-                  <a href="/signin" className="underline underline-offset-4">
+                  <Link to="/signin" className="underline underline-offset-4">
                     Sign in
-                  </a>
+                  </Link>
                 </p>
               </div>
             </div>
