@@ -25,7 +25,7 @@ export function SignupForm({
   const {register, handleSubmit, formState: { errors, isSubmitting}} = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema)
   });
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitError] = useState<string | null>(null);
   const navigate = useNavigate();
   const onSubmit = async (data: SignUpFormValues) => {
     const { firstname, lastname, username, email, password } = data;

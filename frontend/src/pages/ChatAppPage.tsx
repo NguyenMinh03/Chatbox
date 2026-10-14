@@ -1,7 +1,6 @@
 import {AppSidebar} from "@/components/sidebar/app-sidebar";
 import {SidebarProvider} from "@/components/ui/sidebar";
 import ChatWindowLayout from "@/components/chat/ChatWindowLayout";
-import App from "@/App";
 const ChatAppPage = () => {
   return (
     <SidebarProvider>
