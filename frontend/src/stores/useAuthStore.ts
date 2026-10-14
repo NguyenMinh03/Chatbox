@@ -1,9 +1,13 @@
 import { create } from "zustand";
 import { toast } from "sonner";
+import { isAxiosError } from "axios";
 import { authService } from "@/services/authService";
 import type { AuthState } from "@/types/store";
 import { persist } from "zustand/middleware";
 import { useChatStore } from "./useChatStore";
+
+const getErrorMessage = (error: unknown, fallback: string) =>
+  (isAxiosError(error) && error.response?.data?.message) || fallback;
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -34,9 +38,11 @@ export const useAuthStore = create<AuthState>()(
           toast.success(
             "Sign up successful "
           );
+          return true;
         } catch (error) {
           console.error(error);
-          toast.error("Sign Up fail");
+          toast.error(getErrorMessage(error, "Sign Up fail"));
+          return false;
         } finally {
           set({ loading: false });
         }
@@ -55,7 +61,7 @@ export const useAuthStore = create<AuthState>()(
           toast.success("Welcome back to Chatbox🎉");
         } catch (error) {
           console.error(error);
-          toast.error("Sign in fail!");
+          toast.error(getErrorMessage(error, "Sign in fail!"));
         } finally {
           set({ loading: false });
         }

@@ -29,8 +29,8 @@ export function SignupForm({
   const navigate = useNavigate();
   const onSubmit = async (data: SignUpFormValues) => {
     const { firstname, lastname, username, email, password } = data;
-    await signUp(username, password, email,firstname,lastname);
-    navigate("/signin");
+    const success = await signUp(username, password, email,firstname,lastname);
+    if (success) navigate("/signin");
   };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
